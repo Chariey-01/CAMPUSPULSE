@@ -8,11 +8,11 @@ class User(db.Model, SerializerMixin):
     serialize_rules = (
         "-password_hash",
         "-profile.user",
-        "-reviews.user",
-        "-places_submitted.submitted_by_user",
-        "-places_approved.approved_by_user",
-        "-visit_plans.user",
-        "-bookmarks.user",
+        "-reviews",
+        "-places_submitted",
+        "-places_approved",
+        "-visit_plans",
+        "-bookmarks",
     )
 # table columns on the users table
     id = db.Column(db.Integer, primary_key=True)

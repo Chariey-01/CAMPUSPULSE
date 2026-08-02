@@ -2,10 +2,10 @@ from app.extensions import db
 from sqlalchemy_serializer import SerializerMixin
 
 
-class Profile(db.Model):
+class Profile(db.Model, SerializerMixin):
     __tablename__ = "profiles"
 
-    serialize_rules = ("-user.profiles",)
+    serialize_rules = ("-user.profile",)
 # Table columns on the profikles table 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, unique=True)
