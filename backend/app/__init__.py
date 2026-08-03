@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 
 from app.config import Config
@@ -12,7 +14,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
-    cors.init_app(app)
+    cors.init_app(app, resources={r"/api/*": {"origins": os.getenv("FRONTEND_URL", "*")}})
 
     from app import models  # noqa: F401
 
