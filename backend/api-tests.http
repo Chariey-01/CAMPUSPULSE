@@ -1,0 +1,257 @@
+@baseUrl = http://127.0.0.1:5000
+@token = YOUR_TOKEN_HERE
+@adminToken = ADMIN_TOKEN_HERE
+
+### ===================== AUTH =====================
+
+### Register
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "test_student",
+  "email": "test@student.com",
+  "password": "testpass123"
+}
+
+### Login as student (copy access_token into @token above)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "jane_doe",
+  "password": "password123"
+}
+
+### Login as admin (copy access_token into @adminToken above)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+### Me (protected)
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{token}}
+
+### Me - no token (expect 401)
+GET {{baseUrl}}/api/auth/me
+
+
+### ===================== CATEGORIES =====================
+
+### List categories (public)
+GET {{baseUrl}}/api/categories
+
+### Create category (admin only)
+POST {{baseUrl}}/api/categories
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Bookstore",
+  "icon": "book-open",
+  "description": "Textbooks and supplies"
+}
+
+### Get single category
+GET {{baseUrl}}/api/categories/7
+
+### Update category (admin only)
+PUT {{baseUrl}}/api/categories/7
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "description": "Updated description"
+}
+
+### Delete category that HAS places (expect 409 - IntegrityError protection)
+DELETE {{baseUrl}}/api/categories/7
+Authorization: Bearer {{adminToken}}
+
+
+### ===================== PLACES =====================
+
+### List approved places (public)
+GET {{baseUrl}}/api/places
+
+### List places - pagination
+GET {{baseUrl}}/api/places?page=1&per_page=1
+
+### List places - filter by category
+GET {{baseUrl}}/api/places?category_id=7
+
+### List places - search
+GET {{baseUrl}}/api/places?search=coffee
+
+### Submit a new place (protected, becomes Pending)
+POST {{baseUrl}}/api/places
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Test Cafe",
+  "category_id": 7,
+  "description": "A new place for testing",
+  "address": "Block D"
+}
+
+### Get single place (includes review_count/average_rating)
+GET {{baseUrl}}/api/places/7
+
+### Update place (owner or admin)
+PUT {{baseUrl}}/api/places/7
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "opening_hours": "7:00 AM - 10:00 PM"
+}
+
+### My submitted places (protected)
+GET {{baseUrl}}/api/places/mine
+Authorization: Bearer {{token}}
+
+### Pending places queue (admin only)
+GET {{baseUrl}}/api/places/pending
+Authorization: Bearer {{adminToken}}
+
+### Approve a place (admin only)
+POST {{baseUrl}}/api/places/9/approve
+Authorization: Bearer {{adminToken}}
+
+### Reject a place (admin only)
+POST {{baseUrl}}/api/places/9/reject
+Authorization: Bearer {{adminToken}}
+
+### Delete place as NON-owner, non-admin (expect 403 - log in as john_smith for @token first)
+DELETE {{baseUrl}}/api/places/7
+Authorization: Bearer {{token}}
+
+
+### ===================== REVIEWS =====================
+
+### List reviews for a place (public)
+GET {{baseUrl}}/api/places/7/reviews
+
+### Post a review (protected)
+POST {{baseUrl}}/api/places/7/reviews
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "rating": 5,
+  "comment": "Great coffee!"
+}
+
+### Post a review with invalid rating (expect 400)
+POST {{baseUrl}}/api/places/7/reviews
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "rating": 9,
+  "comment": "Bad rating test"
+}
+
+### Update a review you own (check /reviews above for a real id first)
+PUT {{baseUrl}}/api/reviews/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "comment": "Updated review text"
+}
+
+### Delete a review you own
+DELETE {{baseUrl}}/api/reviews/1
+Authorization: Bearer {{token}}
+
+
+### ===================== VISIT PLANS =====================
+
+### My visit plans (protected)
+GET {{baseUrl}}/api/visit-plans
+Authorization: Bearer {{token}}
+
+### Create a visit plan
+POST {{baseUrl}}/api/visit-plans
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "place_id": 8,
+  "notes": "Study session Friday"
+}
+
+### Mark a visit plan as Visited (response should show auto-filled visited_at)
+PUT {{baseUrl}}/api/visit-plans/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "status": "Visited"
+}
+
+### Cancel/delete a visit plan
+DELETE {{baseUrl}}/api/visit-plans/1
+Authorization: Bearer {{token}}
+
+
+### ===================== BOOKMARKS =====================
+
+### My bookmarks (protected)
+GET {{baseUrl}}/api/bookmarks
+Authorization: Bearer {{token}}
+
+### Bookmark a place
+POST {{baseUrl}}/api/bookmarks
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "place_id": 8
+}
+
+### Bookmark the SAME place again (expect 409 - UniqueConstraint protection)
+POST {{baseUrl}}/api/bookmarks
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "place_id": 8
+}
+
+### Remove a bookmark
+DELETE {{baseUrl}}/api/bookmarks/1
+Authorization: Bearer {{token}}
+
+
+### ===================== PROFILE =====================
+
+### Get my profile
+GET {{baseUrl}}/api/profile
+Authorization: Bearer {{token}}
+
+### Update my profile
+PUT {{baseUrl}}/api/profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "bio": "Second year CS student",
+  "course": "Computer Science",
+  "year_of_study": 2
+}
+
+
+### ===================== ERROR HANDLING =====================
+
+### Unknown route (expect 404, JSON body not HTML)
+GET {{baseUrl}}/api/nonexistent-route
+
+### Wrong HTTP method on a valid path (expect 405)
+DELETE {{baseUrl}}/api/categories
