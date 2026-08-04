@@ -10,6 +10,7 @@
   --success: #1a7f37;
   --error: #cf222e;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 6px rgba(0, 0, 0, 0.04);
+  --gradient: linear-gradient(to left, #3b82f6, #6366f1, #7c3aed);
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -38,6 +39,7 @@
     --success: #3fb950;
     --error: #f85149;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 6px rgba(0, 0, 0, 0.3);
+    --gradient: linear-gradient(to left, #60a5fa, #818cf8, #a78bfa);
   }
 }
 
@@ -130,14 +132,14 @@ main {
   flex-wrap: wrap;
   gap: 12px;
   padding: 16px 24px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
+  background: var(--gradient);
+  border-bottom: none;
 }
 
 .navbar .brand {
   font-size: 18px;
   font-weight: 700;
-  color: var(--text-h);
+  color: #fff;
   text-decoration: none;
 }
 
@@ -150,17 +152,25 @@ main {
 
 .nav-links a {
   text-decoration: none;
-  color: var(--text);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 14px;
 }
 
 .nav-links a:hover {
-  color: var(--text-h);
+  color: #fff;
 }
 
 .navbar button {
   font-size: 14px;
   padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+}
+
+.navbar button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: #fff;
 }
 
 /* Forms */
@@ -239,8 +249,8 @@ textarea:focus {
 
 .category-filter button.active {
   color: #fff;
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--gradient);
+  border-color: transparent;
 }
 
 .place-grid {
@@ -272,14 +282,13 @@ textarea:focus {
 .visit-button {
   width: 100%;
   margin-top: 14px;
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--gradient);
+  border: none;
   color: #fff;
 }
 
 .visit-button:hover:not(:disabled) {
-  background: var(--accent-hover);
-  border-color: var(--accent-hover);
+  filter: brightness(1.08);
 }
 
 .place-card img {
