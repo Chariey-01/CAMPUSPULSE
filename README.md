@@ -210,10 +210,10 @@ This creates:
 | Username | Password | Role |
 |---|---|---|
 | `admin` | `admin123` | admin |
-| `jane_doe` | `password123` | student |
-| `john_smith` | `password123` | student |
+| `superadmin` | `password123` | admin |
+| `jane_doe`, `john_smith`, `alice_wanjiru`, `brian_kiptoo`, `faith_njeri`, `kevin_otieno`, `grace_cherono`, `daniel_kamau` | `password123` | student |
 
-...plus 3 categories, 3 places (2 approved, 1 pending), sample reviews, a visit plan, and a bookmark. Running `seed.py` again clears existing data first, so it's safe to re-run any time.
+...plus 8 categories, 24 places (20 approved, 3 pending, 1 rejected), 40 reviews, 20 visit plans, and 22 bookmarks — enough data to demonstrate pagination, search, filtering, and the review aggregation query meaningfully rather than on a handful of rows. Running `seed.py` again clears existing data first, so it's safe to re-run any time.
 
 ---
 
