@@ -95,7 +95,7 @@ export default function PlaceDetailPage() {
       <p>{place.address}</p>
       <p>{place.opening_hours}</p>
       <button type="button" onClick={handleVisitClick} className="visit-button">
-        📍 Visit
+         Pin Visit
       </button>
       {mapError && <p className="error">{mapError}</p>}
       <p>
