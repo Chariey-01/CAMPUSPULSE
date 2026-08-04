@@ -24,17 +24,18 @@ class Place(db.Model, SerializerMixin):
     image_url = db.Column(db.String(255))
     google_maps_link = db.Column(db.String(255))
 
-    category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=False)
-    submitted_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    approved_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+    category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=False)  # one-to-many: Category -> Places
+    submitted_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)  # one-to-many: User -> submitted Places
+    approved_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)  # set once an admin approves/rejects
 
-    status = db.Column(db.String(20), nullable=False, default="Pending")
+    status = db.Column(db.String(20), nullable=False, default="Pending")  # Pending / Approved / Rejected
     approved_at = db.Column(db.DateTime, nullable=True)
 
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     category = db.relationship("Category", backref=db.backref("places", lazy="dynamic"))
+    # two FKs to User, so foreign_keys= disambiguates which column each relationship joins on
     submitted_by_user = db.relationship(
         "User", foreign_keys=[submitted_by], backref=db.backref("places_submitted", lazy="dynamic")
     )

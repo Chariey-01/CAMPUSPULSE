@@ -12,6 +12,7 @@ from app.services.place_service import attach_review_stats
 
 
 class PlaceListResource(Resource):
+    # GET /api/places - list approved places, with pagination/filter/search (public)
     def get(self):
         category_id = request.args.get("category_id", type=int)
         search = request.args.get("search")
@@ -28,6 +29,7 @@ class PlaceListResource(Resource):
 
         return paginate_query(query, serializer=attach_review_stats), 200
 
+    # POST /api/places - submit a new place, always starts Pending
     @jwt_required()
     def post(self):
         data = request.get_json()
@@ -61,12 +63,14 @@ class PlaceListResource(Resource):
 
 
 class PlaceResource(Resource):
+    # GET /api/places/<id> - get one place with review stats attached (public)
     def get(self, place_id):
         place = Place.query.get(place_id)
         if place is None:
             return {"error": "place not found"}, 404
         return attach_review_stats([place])[0], 200
 
+    # PUT /api/places/<id> - update a place (owner or admin only)
     @jwt_required()
     def put(self, place_id):
         place = Place.query.get(place_id)
@@ -85,6 +89,7 @@ class PlaceResource(Resource):
         db.session.commit()
         return place.to_dict(), 200
 
+    # DELETE /api/places/<id> - delete a place (owner or admin only)
     @jwt_required()
     def delete(self, place_id):
         place = Place.query.get(place_id)
@@ -101,6 +106,7 @@ class PlaceResource(Resource):
 
 
 class MyPlacesResource(Resource):
+    # GET /api/places/mine - places the current user submitted, any status
     @jwt_required()
     def get(self):
         current_user = get_current_user()
@@ -109,12 +115,14 @@ class MyPlacesResource(Resource):
 
 
 class PendingPlacesResource(Resource):
+    # GET /api/places/pending - admin moderation queue
     @admin_required
     def get(self):
         query = Place.query.filter_by(status="Pending").order_by(Place.created_at.asc())
         return paginate_query(query), 200
 
 
+# shared by approve/reject below - only the resulting status differs
 def _set_place_status(place_id, status):
     place = Place.query.get(place_id)
     if place is None:
@@ -129,12 +137,14 @@ def _set_place_status(place_id, status):
 
 
 class PlaceApproveResource(Resource):
+    # POST /api/places/<id>/approve - admin approves a pending place
     @admin_required
     def post(self, place_id):
         return _set_place_status(place_id, "Approved")
 
 
 class PlaceRejectResource(Resource):
+    # POST /api/places/<id>/reject - admin rejects a pending place
     @admin_required
     def post(self, place_id):
         return _set_place_status(place_id, "Rejected")

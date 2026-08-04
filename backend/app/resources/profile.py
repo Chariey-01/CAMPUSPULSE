@@ -7,11 +7,13 @@ from app.utils.decorators import get_current_user
 
 
 class ProfileResource(Resource):
+    # GET /api/profile - current user's profile
     @jwt_required()
     def get(self):
         current_user = get_current_user()
         return current_user.profile.to_dict(), 200
 
+    # PUT /api/profile - update current user's profile
     @jwt_required()
     def put(self):
         current_user = get_current_user()

@@ -9,12 +9,14 @@ from app.utils.decorators import get_current_user
 
 
 class BookmarkListResource(Resource):
+    # GET /api/bookmarks - current user's bookmarks
     @jwt_required()
     def get(self):
         current_user = get_current_user()
         bookmarks = Bookmark.query.filter_by(user_id=current_user.id).all()
         return [b.to_dict() for b in bookmarks], 200
 
+    # POST /api/bookmarks - bookmark a place
     @jwt_required()
     def post(self):
         data = request.get_json()
@@ -35,12 +37,14 @@ class BookmarkListResource(Resource):
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
+            # blocked by UniqueConstraint(user_id, place_id)
             return {"error": "place already bookmarked"}, 409
 
         return bookmark.to_dict(), 201
 
 
 class BookmarkResource(Resource):
+    # DELETE /api/bookmarks/<id> - remove a bookmark (owner only)
     @jwt_required()
     def delete(self, bookmark_id):
         bookmark = Bookmark.query.get(bookmark_id)
