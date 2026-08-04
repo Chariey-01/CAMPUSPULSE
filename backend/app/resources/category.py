@@ -8,10 +8,12 @@ from app.utils.decorators import admin_required
 
 
 class CategoryListResource(Resource):
+    # GET /api/categories - list all categories (public)
     def get(self):
         categories = Category.query.all()
         return [c.to_dict() for c in categories], 200
 
+    # POST /api/categories - create a category (admin only)
     @admin_required
     def post(self):
         data = request.get_json()
@@ -35,12 +37,14 @@ class CategoryListResource(Resource):
 
 
 class CategoryResource(Resource):
+    # GET /api/categories/<id> - get one category (public)
     def get(self, category_id):
         category = Category.query.get(category_id)
         if category is None:
             return {"error": "category not found"}, 404
         return category.to_dict(), 200
 
+    # PUT /api/categories/<id> - update a category (admin only)
     @admin_required
     def put(self, category_id):
         category = Category.query.get(category_id)
@@ -55,6 +59,7 @@ class CategoryResource(Resource):
 
         return category.to_dict(), 200
 
+    # DELETE /api/categories/<id> - delete a category (admin only)
     @admin_required
     def delete(self, category_id):
         category = Category.query.get(category_id)
@@ -66,6 +71,7 @@ class CategoryResource(Resource):
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
+            # blocked by FK constraint if places still reference this category
             return {"error": "cannot delete a category that still has places assigned to it"}, 409
 
         return {}, 204

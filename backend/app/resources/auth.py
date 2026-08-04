@@ -9,6 +9,7 @@ from app.utils.decorators import get_current_user
 
 
 class RegisterResource(Resource):
+    # POST /api/auth/register - create a new user + blank profile
     def post(self):
         data = request.get_json()
 
@@ -43,6 +44,7 @@ class RegisterResource(Resource):
 
 
 class LoginResource(Resource):
+    # POST /api/auth/login - verify credentials, return a JWT
     def post(self):
         data = request.get_json()
 
@@ -69,6 +71,7 @@ class LoginResource(Resource):
 
 
 class MeResource(Resource):
+    # GET /api/auth/me - current logged-in user's data
     @jwt_required()
     def get(self):
         user = get_current_user()

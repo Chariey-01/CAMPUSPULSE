@@ -10,12 +10,14 @@ from app.utils.decorators import get_current_user
 
 
 class VisitPlanListResource(Resource):
+    # GET /api/visit-plans - current user's own visit plans
     @jwt_required()
     def get(self):
         current_user = get_current_user()
         plans = VisitPlan.query.filter_by(user_id=current_user.id).all()
         return [p.to_dict() for p in plans], 200
 
+    # POST /api/visit-plans - create a visit plan for a place
     @jwt_required()
     def post(self):
         data = request.get_json()
@@ -42,6 +44,7 @@ class VisitPlanListResource(Resource):
 
 
 class VisitPlanResource(Resource):
+    # PUT /api/visit-plans/<id> - update status/notes (owner only)
     @jwt_required()
     def put(self, plan_id):
         plan = VisitPlan.query.get(plan_id)
@@ -56,6 +59,7 @@ class VisitPlanResource(Resource):
 
         if "status" in data:
             plan.status = data["status"]
+            # auto-stamp the first time it flips to Visited
             if data["status"] == "Visited" and plan.visited_at is None:
                 plan.visited_at = datetime.utcnow()
 
@@ -65,6 +69,7 @@ class VisitPlanResource(Resource):
         db.session.commit()
         return plan.to_dict(), 200
 
+    # DELETE /api/visit-plans/<id> - cancel/delete a visit plan (owner only)
     @jwt_required()
     def delete(self, plan_id):
         plan = VisitPlan.query.get(plan_id)

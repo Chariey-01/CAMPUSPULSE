@@ -3,6 +3,7 @@ from datetime import datetime
 from sqlalchemy_serializer import SerializerMixin
 
 
+# many-to-many User <-> Place, as an association object (carries its own data, unlike Bookmark)
 class VisitPlan(db.Model, SerializerMixin):
     __tablename__ = "visit_plans"
 
@@ -12,7 +13,7 @@ class VisitPlan(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     place_id = db.Column(db.Integer, db.ForeignKey("places.id"), nullable=False)
 
-    status = db.Column(db.String(20), nullable=False, default="Planned")
+    status = db.Column(db.String(20), nullable=False, default="Planned")  # Planned / Visited / Cancelled
     planned_date = db.Column(db.DateTime, nullable=True)
     visited_at = db.Column(db.DateTime, nullable=True)
     notes = db.Column(db.Text)

@@ -13,6 +13,7 @@ def _valid_rating(rating):
 
 
 class ReviewListResource(Resource):
+    # GET /api/places/<id>/reviews - list reviews for a place (public)
     def get(self, place_id):
         place = Place.query.get(place_id)
         if place is None:
@@ -21,6 +22,7 @@ class ReviewListResource(Resource):
         reviews = Review.query.filter_by(place_id=place_id).all()
         return [r.to_dict() for r in reviews], 200
 
+    # POST /api/places/<id>/reviews - post a review (rating 1-5)
     @jwt_required()
     def post(self, place_id):
         place = Place.query.get(place_id)
@@ -53,6 +55,7 @@ class ReviewListResource(Resource):
 
 
 class ReviewResource(Resource):
+    # PUT /api/reviews/<id> - edit your own review
     @jwt_required()
     def put(self, review_id):
         review = Review.query.get(review_id)
@@ -76,6 +79,7 @@ class ReviewResource(Resource):
         db.session.commit()
         return review.to_dict(), 200
 
+    # DELETE /api/reviews/<id> - delete a review (owner or admin)
     @jwt_required()
     def delete(self, review_id):
         review = Review.query.get(review_id)

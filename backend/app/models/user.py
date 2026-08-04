@@ -6,7 +6,7 @@ class User(db.Model, SerializerMixin):
     __tablename__ = "users"
 
     serialize_rules = (
-        "-password_hash",
+        "-password_hash",  # never serialize the hash
         "-profile.user",
         "-reviews",
         "-places_submitted",
@@ -14,12 +14,12 @@ class User(db.Model, SerializerMixin):
         "-visit_plans",
         "-bookmarks",
     )
-# table columns on the users table
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
     email = db.Column(db.String(100), nullable=False, unique=True)
-    password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(20), nullable=False, default="student")
+    password_hash = db.Column(db.String(255), nullable=False)  # set via werkzeug generate_password_hash
+    role = db.Column(db.String(20), nullable=False, default="student")  # "student" or "admin"
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
 

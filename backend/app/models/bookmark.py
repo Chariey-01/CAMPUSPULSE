@@ -3,13 +3,14 @@ from datetime import datetime
 from sqlalchemy_serializer import SerializerMixin
 
 
+# many-to-many User <-> Place, plain join table (no extra data, unlike VisitPlan)
 class Bookmark(db.Model, SerializerMixin):
     __tablename__ = "bookmarks"
 
     serialize_rules = ("-user.bookmarks", "-place.bookmarks")
 
     __table_args__ = (
-        db.UniqueConstraint("user_id", "place_id", name="unique_user_place_bookmark"),
+        db.UniqueConstraint("user_id", "place_id", name="unique_user_place_bookmark"),  # can't bookmark twice
     )
 
     id = db.Column(db.Integer, primary_key=True)
