@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { api } from '../api/client'
 import { useAuth } from '../hooks/useAuth'
+import { openGoogleMaps } from '../services/googleMaps'
 import ReviewList from '../components/ReviewList'
 import ReviewForm from '../components/ReviewForm'
 
@@ -16,6 +17,7 @@ export default function PlaceDetailPage() {
   const [error, setError] = useState('')
   const [visitNotes, setVisitNotes] = useState('')
   const [visitMessage, setVisitMessage] = useState('')
+  const [mapError, setMapError] = useState('')
 
   const loadReviews = useCallback(() => {
     return api.get(`/api/places/${id}/reviews`).then(setReviews)
@@ -46,6 +48,15 @@ export default function PlaceDetailPage() {
   async function handleReviewSubmit(reviewData) {
     await api.post(`/api/places/${id}/reviews`, reviewData)
     await loadReviews()
+  }
+
+  function handleVisitClick() {
+    setMapError('')
+    try {
+      openGoogleMaps(place.google_maps_link)
+    } catch (err) {
+      setMapError(err.message)
+    }
   }
 
   async function handleBookmarkToggle() {
@@ -83,11 +94,10 @@ export default function PlaceDetailPage() {
       <p>{place.description}</p>
       <p>{place.address}</p>
       <p>{place.opening_hours}</p>
-      {place.google_maps_link && (
-        <a href={place.google_maps_link} target="_blank" rel="noreferrer">
-          View on Google Maps
-        </a>
-      )}
+      <button type="button" onClick={handleVisitClick} className="visit-button">
+        📍 Visit
+      </button>
+      {mapError && <p className="error">{mapError}</p>}
       <p>
         {place.average_rating ? `★ ${place.average_rating}` : 'No ratings yet'} ({place.review_count} reviews)
       </p>
