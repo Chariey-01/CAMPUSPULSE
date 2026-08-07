@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Save, Mail, ShieldCheck } from 'lucide-react'
 import { api } from '../api/client'
 import { useAuth } from '../hooks/useAuth'
 
@@ -38,14 +39,30 @@ export default function ProfilePage() {
 
   return (
     <div className="profile-page">
-      <h1>My Profile</h1>
-      <p>Username: {user.username}</p>
-      <p>Email: {user.email}</p>
-      <p>Role: {user.role}</p>
+      <div className="page-header">
+        <h1>{user.username}</h1>
+      </div>
 
-      {message && <p>{message}</p>}
+      <div className="fact-grid" style={{ marginTop: 0 }}>
+        <div className="fact">
+          <Mail size={17} />
+          <div>
+            <span className="fact-label">Email</span>
+            <span className="fact-value">{user.email}</span>
+          </div>
+        </div>
+        <div className="fact">
+          <ShieldCheck size={17} />
+          <div>
+            <span className="fact-label">Role</span>
+            <span className="fact-value" style={{ textTransform: 'capitalize' }}>{user.role}</span>
+          </div>
+        </div>
+      </div>
 
-      <form onSubmit={handleSubmit}>
+      {message && <p className="hint">{message}</p>}
+
+      <form onSubmit={handleSubmit} className="card-form">
         <label>
           Bio
           <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} />
@@ -66,8 +83,8 @@ export default function ProfilePage() {
           Avatar URL
           <input type="text" value={avatar} onChange={(e) => setAvatar(e.target.value)} />
         </label>
-        <button type="submit" disabled={submitting}>
-          {submitting ? 'Saving...' : 'Save Profile'}
+        <button type="submit" disabled={submitting} className="btn-primary icon-btn">
+          <Save size={15} /> {submitting ? 'Saving...' : 'Save Profile'}
         </button>
       </form>
     </div>

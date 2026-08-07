@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { CheckCircle2, XCircle, Trash2, ShieldCheck, Inbox } from 'lucide-react'
 import { api } from '../api/client'
 
 export default function AdminDashboardPage() {
@@ -9,6 +10,7 @@ export default function AdminDashboardPage() {
 
   const [newCategoryName, setNewCategoryName] = useState('')
   const [newCategoryIcon, setNewCategoryIcon] = useState('')
+  const [newCategoryHeroImage, setNewCategoryHeroImage] = useState('')
 
   function loadPendingPlaces() {
     return api.get('/api/places/pending').then((data) => setPendingPlaces(data.items))
@@ -40,10 +42,15 @@ export default function AdminDashboardPage() {
     setError('')
 
     try {
-      const created = await api.post('/api/categories', { name: newCategoryName, icon: newCategoryIcon })
+      const created = await api.post('/api/categories', {
+        name: newCategoryName,
+        icon: newCategoryIcon,
+        hero_image: newCategoryHeroImage,
+      })
       setCategories((prev) => [...prev, created])
       setNewCategoryName('')
       setNewCategoryIcon('')
+      setNewCategoryHeroImage('')
     } catch (err) {
       setError(err.message)
     }
@@ -60,16 +67,23 @@ export default function AdminDashboardPage() {
     }
   }
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <p className="loading-state">Loading...</p>
 
   return (
     <div className="admin-dashboard">
-      <h1>Admin Dashboard</h1>
+      <div className="page-header">
+        <h1><ShieldCheck size={22} style={{ verticalAlign: -3, marginRight: 8, color: 'var(--accent)' }} />Admin Dashboard</h1>
+      </div>
       {error && <p className="error">{error}</p>}
 
       <section>
         <h2>Pending Place Submissions</h2>
-        {pendingPlaces.length === 0 && <p>No pending submissions.</p>}
+        {pendingPlaces.length === 0 && (
+          <div className="empty-state">
+            <Inbox size={24} strokeWidth={1.5} />
+            <p>No pending submissions.</p>
+          </div>
+        )}
         <ul className="simple-list">
           {pendingPlaces.map((place) => (
             <li key={place.id}>
@@ -77,8 +91,12 @@ export default function AdminDashboardPage() {
                 <strong>{place.name}</strong> — {place.category?.name}
                 <p>{place.description}</p>
               </div>
-              <button onClick={() => handleApprove(place.id)}>Approve</button>
-              <button onClick={() => handleReject(place.id)}>Reject</button>
+              <button type="button" onClick={() => handleApprove(place.id)} className="icon-btn btn-sm">
+                <CheckCircle2 size={14} /> Approve
+              </button>
+              <button type="button" onClick={() => handleReject(place.id)} className="btn-danger-text icon-btn btn-sm">
+                <XCircle size={14} /> Reject
+              </button>
             </li>
           ))}
         </ul>
@@ -101,14 +119,33 @@ export default function AdminDashboardPage() {
             value={newCategoryIcon}
             onChange={(e) => setNewCategoryIcon(e.target.value)}
           />
-          <button type="submit">Add Category</button>
+          <input
+            type="text"
+            placeholder="Hero image URL (optional)"
+            value={newCategoryHeroImage}
+            onChange={(e) => setNewCategoryHeroImage(e.target.value)}
+          />
+          <button type="submit" className="btn-primary btn-sm">Add Category</button>
         </form>
+        <p className="hint" style={{ marginTop: -8, marginBottom: 16 }}>
+          Hero image is a URL for now — swapping this for a file upload (Cloudinary, Supabase Storage, etc.)
+          later won't require any change here, since the backend only ever stores the resulting URL.
+        </p>
 
         <ul className="simple-list">
           {categories.map((category) => (
             <li key={category.id}>
-              {category.name}
-              <button onClick={() => handleDeleteCategory(category.id)}>Delete</button>
+              {category.hero_image && (
+                <img
+                  src={category.hero_image}
+                  alt=""
+                  style={{ width: 44, height: 32, objectFit: 'cover', borderRadius: 6, flex: 'none' }}
+                />
+              )}
+              <span style={{ flex: 1 }}>{category.name}</span>
+              <button type="button" onClick={() => handleDeleteCategory(category.id)} className="btn-danger-text icon-btn btn-sm">
+                <Trash2 size={14} /> Delete
+              </button>
             </li>
           ))}
         </ul>

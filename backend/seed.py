@@ -18,16 +18,25 @@ def clear_data():
     db.session.commit()
 
 
+def _unsplash(photo_id, width=1600, quality=65):
+    # Every id below was downloaded and visually checked before being used
+    # here - see frontend/src/lib/categoryPhotos.js for the same practice on
+    # the frontend side. Category hero images are wide (1600px); place
+    # images are requested smaller (800px) since they render in a card, not
+    # a full-width banner - see PLACE_DATA below.
+    return f"https://images.unsplash.com/photo-{photo_id}?w={width}&q={quality}&fit=crop&auto=format"
+
+
 CATEGORY_DATA = [
-    # name, icon, description
-    ("Cafeteria", "utensils", "Places to eat on campus"),
-    ("Library", "book", "Study and reading spaces"),
-    ("Gym", "dumbbell", "Fitness and sports facilities"),
-    ("Hostel", "home", "Student accommodation"),
-    ("Clinic", "heart-pulse", "Health and medical services"),
-    ("Stationery", "pencil", "Books, printing, and supplies"),
-    ("Transport", "bus", "Campus transport stops"),
-    ("Entertainment", "music", "Relaxation and leisure spots"),
+    # name, icon, description, hero_image
+    ("Cafeteria", "utensils", "Places to eat on campus", _unsplash("1414235077428-338989a2e8c0")),
+    ("Library", "book", "Study and reading spaces", _unsplash("1507842217343-583bb7270b66")),
+    ("Gym", "dumbbell", "Fitness and sports facilities", _unsplash("1534438327276-14e5300c3a48")),
+    ("Hostel", "home", "Student accommodation", _unsplash("1595526114035-0d45ed16cfbf")),
+    ("Clinic", "heart-pulse", "Health and medical services", _unsplash("1519494026892-80bbd2d6fd0d")),
+    ("Stationery", "pencil", "Books, printing, and supplies", _unsplash("1543002588-bfa74002ed7e")),
+    ("Transport", "bus", "Campus transport stops", _unsplash("1570125909232-eb263c188f7e")),
+    ("Entertainment", "music", "Relaxation and leisure spots", _unsplash("1531482615713-2afd69097998")),
 ]
 
 USER_DATA = [
@@ -44,32 +53,45 @@ USER_DATA = [
     ("daniel_kamau", "daniel@campuspulse.com", "password123", "student", "Sketches campus buildings.", "Architecture", 4),
 ]
 
+# Place-level photos are deliberately different shots from their category's
+# hero_image above - the whole point of this split is that a place shows its
+# own identity (ideally its real photo/logo, one day uploaded by an admin or
+# owner), not a repeat of the generic category image.
+_CAFE_A, _CAFE_B = _unsplash("1517248135467-4c7edcad34c4", 800, 70), _unsplash("1554118811-1e0d58224f24", 800, 70)
+_LIB_A, _LIB_B = _unsplash("1521587760476-6c12a4b040da", 800, 70), _unsplash("1495446815901-a7297e633e8d", 800, 70)
+_GYM_A, _GYM_B = _unsplash("1571019613454-1cb2f99b2d8b", 800, 70), _unsplash("1517836357463-d25dfeac3438", 800, 70)
+_HOST_A, _HOST_B = _unsplash("1631049307264-da0ec9d70304", 800, 70), _unsplash("1522771739844-6a9f6d5f14af", 800, 70)
+_CLINIC_A, _CLINIC_B = _unsplash("1516549655169-df83a0774514", 800, 70), _unsplash("1666214280391-8ff5bd3c0bf0", 800, 70)
+_STAT_A, _STAT_B = _unsplash("1517842645767-c639042777db", 800, 70), _unsplash("1587614382346-4ec70e388b28", 800, 70)
+_TRANS_A, _TRANS_B = _unsplash("1449824913935-59a10b8d2000", 800, 70), _unsplash("1449965408869-eaa3f722e40d", 800, 70)
+_ENT_A, _ENT_B = _unsplash("1470229722913-7c0e2dbbafd3", 800, 70), _unsplash("1514525253161-7a46d19cd819", 800, 70)
+
 PLACE_DATA = [
-    # name, category, submitted_by, status, description, address, opening_hours
-    ("Java House Campus Branch", "Cafeteria", "jane_doe", "Approved", "Popular coffee shop near the main gate", "Main Gate, Block A", "7:00 AM - 9:00 PM"),
-    ("Student Cafeteria", "Cafeteria", "john_smith", "Approved", "The main dining hall for students", "Central Block", "6:30 AM - 9:00 PM"),
-    ("Mama Njeri Kitchen", "Cafeteria", "alice_wanjiru", "Approved", "Home-style meals at student prices", "Behind Hall B", "8:00 AM - 8:00 PM"),
-    ("Campus Grill", "Cafeteria", "brian_kiptoo", "Approved", "Grilled snacks and fast food", "Sports Complex Road", "10:00 AM - 10:00 PM"),
-    ("Old Cafeteria Extension", "Cafeteria", "kevin_otieno", "Rejected", "Proposed extension to the old cafeteria", "East Wing", "N/A"),
-    ("Main Library", "Library", "faith_njeri", "Approved", "Central campus library with silent study rooms", "Academic Block C", "8:00 AM - 10:00 PM"),
-    ("Engineering Library", "Library", "brian_kiptoo", "Approved", "Technical resources for engineering students", "Engineering Block", "8:00 AM - 9:00 PM"),
-    ("Digital Learning Centre", "Library", "alice_wanjiru", "Approved", "Computers and online resources", "Academic Block D", "8:00 AM - 8:00 PM"),
-    ("Student Gym", "Gym", "jane_doe", "Approved", "Campus fitness center", "Sports Complex", "6:00 AM - 8:00 PM"),
-    ("Sports Complex", "Gym", "brian_kiptoo", "Approved", "Football and basketball facilities", "South Campus", "6:00 AM - 9:00 PM"),
-    ("Fitness Hub", "Gym", "kevin_otieno", "Approved", "Modern gym equipment and personal training", "Hall A Basement", "6:00 AM - 10:00 PM"),
-    ("Hall A Hostel", "Hostel", "daniel_kamau", "Approved", "First-year student accommodation", "North Campus", "24 hours"),
-    ("Hall B Hostel", "Hostel", "grace_cherono", "Approved", "Mixed accommodation block", "North Campus", "24 hours"),
-    ("Sunrise Hostel", "Hostel", "faith_njeri", "Pending", "Off-campus student housing", "East Gate", "24 hours"),
-    ("Campus Medical Centre", "Clinic", "john_smith", "Approved", "Primary healthcare for students", "Admin Block", "8:00 AM - 6:00 PM"),
-    ("Student Wellness Clinic", "Clinic", "grace_cherono", "Approved", "Counseling and wellness services", "Student Centre", "9:00 AM - 5:00 PM"),
-    ("Campus Bookshop", "Stationery", "daniel_kamau", "Approved", "Textbooks and supplies", "Main Gate", "8:00 AM - 6:00 PM"),
-    ("Smart Print Centre", "Stationery", "kevin_otieno", "Approved", "Printing and photocopying", "Library Annex", "8:00 AM - 8:00 PM"),
-    ("Quick Copies", "Stationery", "alice_wanjiru", "Approved", "Fast, affordable printing", "Student Centre", "8:00 AM - 7:00 PM"),
-    ("Main Bus Stop", "Transport", "john_smith", "Approved", "Main campus shuttle and bus stop", "Main Gate", "5:30 AM - 10:00 PM"),
-    ("North Gate Shuttle Stop", "Transport", "jane_doe", "Approved", "Shuttle stop for North Campus residents", "North Gate", "6:00 AM - 9:00 PM"),
-    ("Student Lounge", "Entertainment", "grace_cherono", "Pending", "Relaxation space with sofas and Wi-Fi", "Student Centre", "9:00 AM - 11:00 PM"),
-    ("Amphitheatre", "Entertainment", "daniel_kamau", "Approved", "Open-air venue for events", "Central Campus", "Open access"),
-    ("Gaming Hub", "Entertainment", "kevin_otieno", "Pending", "Console and PC gaming lounge", "Student Centre", "10:00 AM - 10:00 PM"),
+    # name, category, submitted_by, status, description, address, opening_hours, image_url
+    ("Java House Campus Branch", "Cafeteria", "jane_doe", "Approved", "Popular coffee shop near the main gate", "Main Gate, Block A", "7:00 AM - 9:00 PM", _CAFE_A),
+    ("Student Cafeteria", "Cafeteria", "john_smith", "Approved", "The main dining hall for students", "Central Block", "6:30 AM - 9:00 PM", _CAFE_B),
+    ("Mama Njeri Kitchen", "Cafeteria", "alice_wanjiru", "Approved", "Home-style meals at student prices", "Behind Hall B", "8:00 AM - 8:00 PM", _CAFE_A),
+    ("Campus Grill", "Cafeteria", "brian_kiptoo", "Approved", "Grilled snacks and fast food", "Sports Complex Road", "10:00 AM - 10:00 PM", _CAFE_B),
+    ("Old Cafeteria Extension", "Cafeteria", "kevin_otieno", "Rejected", "Proposed extension to the old cafeteria", "East Wing", "N/A", _CAFE_A),
+    ("Main Library", "Library", "faith_njeri", "Approved", "Central campus library with silent study rooms", "Academic Block C", "8:00 AM - 10:00 PM", _LIB_A),
+    ("Engineering Library", "Library", "brian_kiptoo", "Approved", "Technical resources for engineering students", "Engineering Block", "8:00 AM - 9:00 PM", _LIB_B),
+    ("Digital Learning Centre", "Library", "alice_wanjiru", "Approved", "Computers and online resources", "Academic Block D", "8:00 AM - 8:00 PM", _LIB_A),
+    ("Student Gym", "Gym", "jane_doe", "Approved", "Campus fitness center", "Sports Complex", "6:00 AM - 8:00 PM", _GYM_A),
+    ("Sports Complex", "Gym", "brian_kiptoo", "Approved", "Football and basketball facilities", "South Campus", "6:00 AM - 9:00 PM", _GYM_B),
+    ("Fitness Hub", "Gym", "kevin_otieno", "Approved", "Modern gym equipment and personal training", "Hall A Basement", "6:00 AM - 10:00 PM", _GYM_A),
+    ("Hall A Hostel", "Hostel", "daniel_kamau", "Approved", "First-year student accommodation", "North Campus", "24 hours", _HOST_A),
+    ("Hall B Hostel", "Hostel", "grace_cherono", "Approved", "Mixed accommodation block", "North Campus", "24 hours", _HOST_B),
+    ("Sunrise Hostel", "Hostel", "faith_njeri", "Pending", "Off-campus student housing", "East Gate", "24 hours", _HOST_A),
+    ("Campus Medical Centre", "Clinic", "john_smith", "Approved", "Primary healthcare for students", "Admin Block", "8:00 AM - 6:00 PM", _CLINIC_A),
+    ("Student Wellness Clinic", "Clinic", "grace_cherono", "Approved", "Counseling and wellness services", "Student Centre", "9:00 AM - 5:00 PM", _CLINIC_B),
+    ("Campus Bookshop", "Stationery", "daniel_kamau", "Approved", "Textbooks and supplies", "Main Gate", "8:00 AM - 6:00 PM", _STAT_A),
+    ("Smart Print Centre", "Stationery", "kevin_otieno", "Approved", "Printing and photocopying", "Library Annex", "8:00 AM - 8:00 PM", _STAT_B),
+    ("Quick Copies", "Stationery", "alice_wanjiru", "Approved", "Fast, affordable printing", "Student Centre", "8:00 AM - 7:00 PM", _STAT_A),
+    ("Main Bus Stop", "Transport", "john_smith", "Approved", "Main campus shuttle and bus stop", "Main Gate", "5:30 AM - 10:00 PM", _TRANS_A),
+    ("North Gate Shuttle Stop", "Transport", "jane_doe", "Approved", "Shuttle stop for North Campus residents", "North Gate", "6:00 AM - 9:00 PM", _TRANS_B),
+    ("Student Lounge", "Entertainment", "grace_cherono", "Pending", "Relaxation space with sofas and Wi-Fi", "Student Centre", "9:00 AM - 11:00 PM", _ENT_A),
+    ("Amphitheatre", "Entertainment", "daniel_kamau", "Approved", "Open-air venue for events", "Central Campus", "Open access", _ENT_B),
+    ("Gaming Hub", "Entertainment", "kevin_otieno", "Pending", "Console and PC gaming lounge", "Student Centre", "10:00 AM - 10:00 PM", _ENT_A),
 ]
 
 REVIEW_DATA = [
@@ -183,8 +205,8 @@ def seed_data():
 
         print("Seeding categories...")
         categories = {}
-        for name, icon, description in CATEGORY_DATA:
-            category = Category(name=name, icon=icon, description=description)
+        for name, icon, description, hero_image in CATEGORY_DATA:
+            category = Category(name=name, icon=icon, description=description, hero_image=hero_image)
             db.session.add(category)
             categories[name] = category
         db.session.commit()
@@ -202,12 +224,13 @@ def seed_data():
         print("Seeding places...")
         admin = users["admin"]
         places = {}
-        for name, category_name, submitted_by, status, description, address, hours in PLACE_DATA:
+        for name, category_name, submitted_by, status, description, address, hours, image_url in PLACE_DATA:
             place = Place(
                 name=name,
                 description=description,
                 address=address,
                 opening_hours=hours,
+                image_url=image_url,
                 category_id=categories[category_name].id,
                 submitted_by=users[submitted_by].id,
                 status=status,

@@ -14,6 +14,8 @@ export function openGoogleMaps(url) {
     throw new Error('No map location is available for this place yet.')
   }
 
-  // no OS/device detection needed - see explanation below
+  // google_maps_link is always a plain https:// URL (validated above), so the browser/OS
+  // handles routing it to the Google Maps app or website on its own - no need to branch
+  // on platform or construct a native deep-link scheme ourselves
   window.open(url, '_blank', 'noopener,noreferrer')
 }

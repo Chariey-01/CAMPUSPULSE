@@ -29,6 +29,7 @@ class CategoryListResource(Resource):
             name=name,
             icon=data.get("icon"),
             description=data.get("description"),
+            hero_image=data.get("hero_image"),
         )
         db.session.add(category)
         db.session.commit()
@@ -55,6 +56,7 @@ class CategoryResource(Resource):
         category.name = data.get("name", category.name)
         category.icon = data.get("icon", category.icon)
         category.description = data.get("description", category.description)
+        category.hero_image = data.get("hero_image", category.hero_image)
         db.session.commit()
 
         return category.to_dict(), 200

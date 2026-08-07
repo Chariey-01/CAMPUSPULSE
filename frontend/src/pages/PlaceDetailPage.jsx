@@ -1,8 +1,11 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, createElement } from 'react'
 import { useParams } from 'react-router-dom'
+import { Star, Clock, MapPin, Phone, Navigation2, Bookmark, CalendarPlus } from 'lucide-react'
 import { api } from '../api/client'
 import { useAuth } from '../hooks/useAuth'
 import { openGoogleMaps } from '../services/googleMaps'
+import PlaceImage from '../components/PlaceImage'
+import { getCategoryIcon, getCategoryStyle } from '../lib/categoryVisuals'
 import ReviewList from '../components/ReviewList'
 import ReviewForm from '../components/ReviewForm'
 
@@ -36,6 +39,9 @@ export default function PlaceDetailPage() {
   useEffect(() => {
     if (!user) return
 
+    // there's no "is this place bookmarked" endpoint, so we fetch the user's full
+    // bookmark list and find the match client-side; `id` is a route param (string),
+    // hence Number(id) to compare against the numeric place_id from the API
     api
       .get('/api/bookmarks')
       .then((bookmarks) => {
@@ -82,31 +88,81 @@ export default function PlaceDetailPage() {
     }
   }
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <p className="loading-state">Loading...</p>
   if (error) return <p className="error">{error}</p>
   if (!place) return null
 
+  const CategoryIcon = getCategoryIcon(place.category?.icon)
+  const catStyle = getCategoryStyle(place.category)
+
   return (
     <div className="place-detail">
-      <h1>{place.name}</h1>
-      <p className="category">{place.category?.name}</p>
-      {place.image_url && <img src={place.image_url} alt={place.name} />}
-      <p>{place.description}</p>
-      <p>{place.address}</p>
-      <p>{place.opening_hours}</p>
-      <button type="button" onClick={handleVisitClick} className="visit-button">
-         Pin Visit
+      <PlaceImage place={place} className="place-detail-hero" iconSize={56} />
+
+      <div className="place-detail-header">
+        <div>
+          {place.category?.name && (
+            <span className="category-pill" style={catStyle}>
+              {createElement(CategoryIcon, { size: 12, strokeWidth: 2 })}
+              {place.category.name}
+            </span>
+          )}
+          <h1 style={{ marginTop: 8 }}>{place.name}</h1>
+        </div>
+        <span className={`rating ${place.average_rating ? '' : 'unrated'}`}>
+          <Star size={15} fill={place.average_rating ? 'currentColor' : 'none'} />
+          {place.average_rating ? place.average_rating : 'No ratings yet'}
+          <span style={{ color: 'var(--text-faint)', fontWeight: 400 }}>
+            ({place.review_count ?? 0})
+          </span>
+        </span>
+      </div>
+
+      {place.description && <p className="description">{place.description}</p>}
+
+      <div className="fact-grid">
+        {place.opening_hours && (
+          <div className="fact">
+            <Clock size={17} />
+            <div>
+              <span className="fact-label">Opening hours</span>
+              <span className="fact-value">{place.opening_hours}</span>
+            </div>
+          </div>
+        )}
+        {place.address && (
+          <div className="fact">
+            <MapPin size={17} />
+            <div>
+              <span className="fact-label">Location</span>
+              <span className="fact-value">{place.address}</span>
+            </div>
+          </div>
+        )}
+        {place.phone && (
+          <div className="fact">
+            <Phone size={17} />
+            <div>
+              <span className="fact-label">Phone</span>
+              <span className="fact-value">{place.phone}</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <button type="button" onClick={handleVisitClick} className="visit-button btn-primary">
+        <Navigation2 size={15} /> Get Directions
       </button>
       {mapError && <p className="error">{mapError}</p>}
-      <p>
-        {place.average_rating ? `★ ${place.average_rating}` : 'No ratings yet'} ({place.review_count} reviews)
-      </p>
 
       {user && (
         <div className="place-actions">
-          <button onClick={handleBookmarkToggle}>
-            {bookmark ? 'Remove Bookmark' : 'Bookmark this place'}
-          </button>
+          <div className="action-row">
+            <button type="button" onClick={handleBookmarkToggle} className={bookmark ? '' : 'btn-primary'}>
+              <Bookmark size={15} fill={bookmark ? 'currentColor' : 'none'} />
+              {bookmark ? 'Remove Bookmark' : 'Bookmark this place'}
+            </button>
+          </div>
 
           <form onSubmit={handleVisitPlanSubmit} className="visit-plan-form">
             <input
@@ -115,14 +171,16 @@ export default function PlaceDetailPage() {
               value={visitNotes}
               onChange={(e) => setVisitNotes(e.target.value)}
             />
-            <button type="submit">Plan a visit</button>
+            <button type="submit" className="icon-btn">
+              <CalendarPlus size={15} /> Plan a visit
+            </button>
           </form>
-          {visitMessage && <p>{visitMessage}</p>}
+          {visitMessage && <p className="hint">{visitMessage}</p>}
         </div>
       )}
 
       <h2>Reviews</h2>
-      {user ? <ReviewForm onSubmit={handleReviewSubmit} /> : <p>Log in to write a review.</p>}
+      {user ? <ReviewForm onSubmit={handleReviewSubmit} /> : <p className="hint">Log in to write a review.</p>}
       <ReviewList reviews={reviews} />
     </div>
   )

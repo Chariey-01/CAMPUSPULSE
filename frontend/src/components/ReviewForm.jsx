@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Star } from 'lucide-react'
 
 export default function ReviewForm({ onSubmit }) {
   const [rating, setRating] = useState(5)
@@ -28,11 +29,19 @@ export default function ReviewForm({ onSubmit }) {
 
       <label>
         Rating
-        <select value={rating} onChange={(e) => setRating(e.target.value)}>
-          {[5, 4, 3, 2, 1].map((value) => (
-            <option key={value} value={value}>{value} star{value === 1 ? '' : 's'}</option>
+        <span className="star-picker">
+          {[1, 2, 3, 4, 5].map((value) => (
+            <button
+              key={value}
+              type="button"
+              className={value <= rating ? 'filled' : ''}
+              onClick={() => setRating(value)}
+              aria-label={`${value} star${value === 1 ? '' : 's'}`}
+            >
+              <Star size={20} fill={value <= rating ? 'currentColor' : 'none'} />
+            </button>
           ))}
-        </select>
+        </span>
       </label>
 
       <label>
@@ -40,7 +49,7 @@ export default function ReviewForm({ onSubmit }) {
         <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={3} />
       </label>
 
-      <button type="submit" disabled={submitting}>
+      <button type="submit" disabled={submitting} className="btn-primary">
         {submitting ? 'Posting...' : 'Post Review'}
       </button>
     </form>
