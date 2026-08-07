@@ -23,6 +23,7 @@ async function request(path, options = {}) {
 
   let data = null
   try {
+    // DELETE endpoints return 204 with an empty body, which has no valid JSON to parse
     data = await response.json()
   } catch {
     data = null

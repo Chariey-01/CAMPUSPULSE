@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { CalendarCheck, CheckCircle2, XCircle } from 'lucide-react'
 import { api } from '../api/client'
 
 export default function VisitPlansPage() {
@@ -25,24 +26,38 @@ export default function VisitPlansPage() {
     setPlans((prev) => prev.filter((p) => p.id !== planId))
   }
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <p className="loading-state">Loading...</p>
 
   return (
     <div className="visit-plans-page">
-      <h1>My Visit Plans</h1>
+      <div className="page-header">
+        <h1>My Visit Plans</h1>
+        <p>Places you're planning to check out.</p>
+      </div>
       {error && <p className="error">{error}</p>}
-      {plans.length === 0 && <p>No visit plans yet.</p>}
+      {plans.length === 0 && (
+        <div className="empty-state">
+          <CalendarCheck size={26} strokeWidth={1.5} />
+          <p>No visit plans yet — plan a visit from any place's page.</p>
+        </div>
+      )}
 
       <ul className="simple-list">
         {plans.map((plan) => (
           <li key={plan.id}>
-            <Link to={`/places/${plan.place_id}`}>{plan.place?.name}</Link>
+            <div className="item-info">
+              <Link to={`/places/${plan.place_id}`}>{plan.place?.name}</Link>
+              {plan.notes && <p>{plan.notes}</p>}
+            </div>
             <span className={`status status-${plan.status.toLowerCase()}`}>{plan.status}</span>
-            {plan.notes && <p>{plan.notes}</p>}
             {plan.status === 'Planned' && (
-              <button onClick={() => handleMarkVisited(plan.id)}>Mark as Visited</button>
+              <button type="button" onClick={() => handleMarkVisited(plan.id)} className="icon-btn btn-sm">
+                <CheckCircle2 size={14} /> Mark as Visited
+              </button>
             )}
-            <button onClick={() => handleCancel(plan.id)}>Cancel</button>
+            <button type="button" onClick={() => handleCancel(plan.id)} className="btn-danger-text icon-btn btn-sm">
+              <XCircle size={14} /> Cancel
+            </button>
           </li>
         ))}
       </ul>

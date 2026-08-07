@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Send } from 'lucide-react'
 import { api } from '../api/client'
 
 export default function SubmitPlacePage() {
@@ -44,12 +45,14 @@ export default function SubmitPlacePage() {
 
   return (
     <div className="submit-place-page">
-      <h1>Submit a Place</h1>
-      <p>Your submission will be reviewed by an admin before it appears publicly.</p>
+      <div className="page-header">
+        <h1>Submit a Place</h1>
+        <p>Your submission will be reviewed by an admin before it appears publicly.</p>
+      </div>
 
       {error && <p className="error">{error}</p>}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="card-form">
         <label>
           Name
           <input type="text" value={form.name} onChange={handleChange('name')} required />
@@ -95,8 +98,8 @@ export default function SubmitPlacePage() {
           <input type="text" value={form.google_maps_link} onChange={handleChange('google_maps_link')} />
         </label>
 
-        <button type="submit" disabled={submitting}>
-          {submitting ? 'Submitting...' : 'Submit Place'}
+        <button type="submit" disabled={submitting} className="btn-primary icon-btn">
+          <Send size={15} /> {submitting ? 'Submitting...' : 'Submit Place'}
         </button>
       </form>
     </div>

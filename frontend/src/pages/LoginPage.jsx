@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { LogIn } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 
 export default function LoginPage() {
@@ -43,8 +44,8 @@ export default function LoginPage() {
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </label>
 
-        <button type="submit" disabled={submitting}>
-          {submitting ? 'Logging in...' : 'Login'}
+        <button type="submit" disabled={submitting} className="btn-primary icon-btn">
+          <LogIn size={15} /> {submitting ? 'Logging in...' : 'Login'}
         </button>
       </form>
 

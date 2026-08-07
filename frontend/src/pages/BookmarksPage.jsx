@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { BookmarkX } from 'lucide-react'
 import PlaceCard from '../components/PlaceCard'
 import { api } from '../api/client'
 
@@ -20,19 +21,29 @@ export default function BookmarksPage() {
     setBookmarks((prev) => prev.filter((b) => b.id !== bookmarkId))
   }
 
-  if (loading) return <p>Loading...</p>
+  if (loading) return <p className="loading-state">Loading...</p>
 
   return (
     <div className="bookmarks-page">
-      <h1>My Bookmarks</h1>
+      <div className="page-header">
+        <h1>My Bookmarks</h1>
+        <p>Places you've saved for later.</p>
+      </div>
       {error && <p className="error">{error}</p>}
-      {bookmarks.length === 0 && <p>No bookmarks yet.</p>}
+      {bookmarks.length === 0 && (
+        <div className="empty-state">
+          <BookmarkX size={26} strokeWidth={1.5} />
+          <p>No bookmarks yet — save a place from its page to see it here.</p>
+        </div>
+      )}
 
       <div className="place-grid">
         {bookmarks.map((bookmark) => (
           <div key={bookmark.id} className="bookmark-item">
-            <PlaceCard place={bookmark.place} />
-            <button onClick={() => handleRemove(bookmark.id)}>Remove</button>
+            <PlaceCard place={bookmark.place} showBookmark={false} />
+            <button type="button" onClick={() => handleRemove(bookmark.id)} className="btn-danger-text btn-sm">
+              Remove bookmark
+            </button>
           </div>
         ))}
       </div>

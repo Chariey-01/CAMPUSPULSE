@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { UserPlus } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 
 export default function RegisterPage() {
@@ -30,7 +31,7 @@ export default function RegisterPage() {
   }
 
   if (success) {
-    return <p>Registration successful! Redirecting to login...</p>
+    return <div className="auth-page"><p className="hint">Registration successful! Redirecting to login...</p></div>
   }
 
   return (
@@ -61,8 +62,8 @@ export default function RegisterPage() {
           />
         </label>
 
-        <button type="submit" disabled={submitting}>
-          {submitting ? 'Registering...' : 'Register'}
+        <button type="submit" disabled={submitting} className="btn-primary icon-btn">
+          <UserPlus size={15} /> {submitting ? 'Registering...' : 'Register'}
         </button>
       </form>
 

@@ -15,6 +15,8 @@ export function AuthProvider({ children }) {
       return
     }
 
+    // re-validate the stored token against the API on every load rather than trusting
+    // it blindly - it may have expired or been revoked server-side since it was saved
     api
       .get('/api/auth/me')
       .then((data) => setUser(data))
