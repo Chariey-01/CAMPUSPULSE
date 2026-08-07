@@ -520,6 +520,7 @@ textarea:focus {
 
 .search-bar {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 6px;
   padding: 6px;
