@@ -13,6 +13,7 @@ def register_resources(api):
     from app.resources.visit_plan import VisitPlanListResource, VisitPlanResource
     from app.resources.bookmark import BookmarkListResource, BookmarkResource
     from app.resources.profile import ProfileResource
+    from app.resources.upload import UploadSignatureResource
 
     api.add_resource(RegisterResource, "/api/auth/register")
     api.add_resource(LoginResource, "/api/auth/login")
@@ -38,3 +39,5 @@ def register_resources(api):
     api.add_resource(BookmarkResource, "/api/bookmarks/<int:bookmark_id>")
 
     api.add_resource(ProfileResource, "/api/profile")
+
+    api.add_resource(UploadSignatureResource, "/api/uploads/signature")
