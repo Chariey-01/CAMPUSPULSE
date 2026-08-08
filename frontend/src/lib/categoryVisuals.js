@@ -7,6 +7,12 @@ import {
   Pencil,
   Bus,
   Music2,
+  GraduationCap,
+  Briefcase,
+  Wrench,
+  Shield,
+  Users,
+  Church,
   MapPin,
 } from 'lucide-react'
 
@@ -21,18 +27,29 @@ const ICON_MAP = {
   pencil: Pencil,
   bus: Bus,
   music: Music2,
+  'graduation-cap': GraduationCap,
+  briefcase: Briefcase,
+  wrench: Wrench,
+  shield: Shield,
+  users: Users,
+  church: Church,
 }
 
 export function getCategoryIcon(iconKey) {
   return ICON_MAP[iconKey?.toLowerCase()] || MapPin
 }
 
+// Must match the number of --cat-N tokens defined in index.css. Bump both
+// together when adding more curated hues.
+const CATEGORY_COLOR_COUNT = 14
+
 // Categories are admin-created and open-ended, so identity color is derived
 // from the id (stable, deterministic) rather than a fixed name lookup —
-// every category gets one of 8 curated hues without needing a mapping table.
+// every category gets one of CATEGORY_COLOR_COUNT curated hues without
+// needing a mapping table.
 export function getCategoryColor(categoryId) {
   const n = Number.isFinite(categoryId) ? categoryId : 0
-  const index = ((n - 1) % 8 + 8) % 8
+  const index = ((n - 1) % CATEGORY_COLOR_COUNT + CATEGORY_COLOR_COUNT) % CATEGORY_COLOR_COUNT
   return `var(--cat-${index + 1})`
 }
 

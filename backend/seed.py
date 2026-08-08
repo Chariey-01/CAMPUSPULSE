@@ -37,6 +37,16 @@ CATEGORY_DATA = [
     ("Stationery", "pencil", "Books, printing, and supplies", _unsplash("1543002588-bfa74002ed7e")),
     ("Transport", "bus", "Campus transport stops", _unsplash("1570125909232-eb263c188f7e")),
     ("Entertainment", "music", "Relaxation and leisure spots", _unsplash("1531482615713-2afd69097998")),
+    # Wayfinding categories - these hold individual buildings/offices as places
+    # rather than getting a category per department/office (e.g. "Computer
+    # Science" and "Engineering" are places inside Academic Buildings, not
+    # categories of their own) - keeps the category list itself manageable.
+    ("Academic Buildings", "graduation-cap", "Lecture halls, labs, and faculty buildings", _unsplash("1562774053-701939374585")),
+    ("Administration", "briefcase", "Offices for admissions, finance, and student records", _unsplash("1592280771190-3e2e4d571952")),
+    ("Utilities", "wrench", "Washrooms, water points, ATMs, and everyday essentials", _unsplash("1517646287270-a5a9ca602e5c")),
+    ("Safety & Security", "shield", "Security offices and emergency points on campus", _unsplash("1582139329536-e7284fece509")),
+    ("Student Life", "users", "Clubs, student government, and community spaces", _unsplash("1523240795612-9a054b0db644")),
+    ("Religious", "church", "Chapels, mosques, and quiet spaces for reflection", _unsplash("1548625149-fc4a29cf7092")),
 ]
 
 USER_DATA = [
@@ -65,6 +75,15 @@ _CLINIC_A, _CLINIC_B = _unsplash("1516549655169-df83a0774514", 800, 70), _unspla
 _STAT_A, _STAT_B = _unsplash("1517842645767-c639042777db", 800, 70), _unsplash("1587614382346-4ec70e388b28", 800, 70)
 _TRANS_A, _TRANS_B = _unsplash("1449824913935-59a10b8d2000", 800, 70), _unsplash("1449965408869-eaa3f722e40d", 800, 70)
 _ENT_A, _ENT_B = _unsplash("1470229722913-7c0e2dbbafd3", 800, 70), _unsplash("1514525253161-7a46d19cd819", 800, 70)
+_ACAD_A, _ACAD_B = _unsplash("1571260899304-425eee4c7efc", 800, 70), _unsplash("1524178232363-1fb2b075b655", 800, 70)
+_ADMIN_A, _ADMIN_B = _unsplash("1554224155-6726b3ff858f", 800, 70), _unsplash("1568992688065-536aad8a12f6", 800, 70)
+_MOSQUE = _unsplash("1585036156171-384164a8c675", 800, 70)
+_STUDENTLIFE = _unsplash("1541178735493-479c1a27ed24", 800, 70)
+_PARKING = _unsplash("1465447142348-e9952c393450", 800, 70)
+# Utilities and Safety & Security places intentionally have no image_url below -
+# no verified photo distinct enough from their category hero was found for these
+# (e.g. an ATM or a washroom), so they fall back to PlaceImage's category-tinted
+# icon tile instead of forcing a mismatched stock photo.
 
 PLACE_DATA = [
     # name, category, submitted_by, status, description, address, opening_hours, image_url
@@ -92,6 +111,37 @@ PLACE_DATA = [
     ("Student Lounge", "Entertainment", "grace_cherono", "Pending", "Relaxation space with sofas and Wi-Fi", "Student Centre", "9:00 AM - 11:00 PM", _ENT_A),
     ("Amphitheatre", "Entertainment", "daniel_kamau", "Approved", "Open-air venue for events", "Central Campus", "Open access", _ENT_B),
     ("Gaming Hub", "Entertainment", "kevin_otieno", "Pending", "Console and PC gaming lounge", "Student Centre", "10:00 AM - 10:00 PM", _ENT_A),
+
+    ("Main Gate", "Transport", "john_smith", "Approved", "Primary vehicle and pedestrian entrance to campus", "Perimeter Road", "24 hours", None),
+    ("Visitor Parking", "Transport", "grace_cherono", "Approved", "Parking area for visitors and staff", "Near Main Gate", "6:00 AM - 10:00 PM", _PARKING),
+
+    ("Engineering Complex", "Academic Buildings", "brian_kiptoo", "Approved", "Labs and lecture halls for engineering students", "North Academic Precinct", "7:00 AM - 9:00 PM", _ACAD_A),
+    ("Science Complex", "Academic Buildings", "faith_njeri", "Approved", "Physics, chemistry, and biology laboratories", "North Academic Precinct", "7:00 AM - 9:00 PM", _ACAD_B),
+    ("Business School", "Academic Buildings", "alice_wanjiru", "Approved", "Home of the school of business and economics", "South Academic Precinct", "7:00 AM - 8:00 PM", _ACAD_A),
+    ("Computing & ICT Building", "Academic Buildings", "kevin_otieno", "Approved", "Computer labs and the ICT department", "South Academic Precinct", "7:00 AM - 10:00 PM", _ACAD_B),
+
+    ("Administration Block", "Administration", "daniel_kamau", "Approved", "Main administrative offices", "Central Campus", "8:00 AM - 5:00 PM", _ADMIN_A),
+    ("Registrar's Office", "Administration", "jane_doe", "Approved", "Student records, transcripts, and enrollment", "Administration Block, Ground Floor", "8:00 AM - 4:30 PM", _ADMIN_B),
+    ("Finance Office", "Administration", "john_smith", "Approved", "Fee payments and financial queries", "Administration Block, 1st Floor", "8:30 AM - 4:00 PM", _ADMIN_A),
+    ("Admissions Office", "Administration", "grace_cherono", "Pending", "New student admissions and inquiries", "Administration Block, Ground Floor", "8:00 AM - 4:30 PM", _ADMIN_B),
+
+    ("Central Washrooms", "Utilities", "brian_kiptoo", "Approved", "Public restrooms near the main square", "Main Square", "24 hours", None),
+    ("Library Water Point", "Utilities", "faith_njeri", "Approved", "Free drinking water dispenser", "Main Library, Ground Floor", "8:00 AM - 10:00 PM", None),
+    ("Campus ATM", "Utilities", "alice_wanjiru", "Approved", "24-hour cash withdrawal point", "Student Centre", "24 hours", None),
+    ("Lost & Found Office", "Utilities", "kevin_otieno", "Pending", "Report or collect lost items", "Main Security Office", "9:00 AM - 5:00 PM", None),
+
+    ("Main Security Office", "Safety & Security", "daniel_kamau", "Approved", "Campus security and visitor sign-in", "Main Gate", "24 hours", None),
+    ("Emergency Assembly Point", "Safety & Security", "jane_doe", "Approved", "Designated gathering point during evacuations", "Central Quad", "Always accessible", None),
+    ("CCTV Control Room", "Safety & Security", "john_smith", "Rejected", "Campus surveillance monitoring", "Main Security Office", "N/A", None),
+
+    ("Student Centre", "Student Life", "grace_cherono", "Approved", "Hub for student activities and events", "Central Campus", "7:00 AM - 11:00 PM", None),
+    ("Clubs & Societies Office", "Student Life", "kevin_otieno", "Approved", "Register and manage student clubs", "Student Centre, 2nd Floor", "9:00 AM - 5:00 PM", _STUDENTLIFE),
+    ("Student Union Office", "Student Life", "brian_kiptoo", "Approved", "Elected student government offices", "Student Centre, 2nd Floor", "9:00 AM - 5:00 PM", None),
+    ("Counseling Centre", "Student Life", "faith_njeri", "Pending", "Confidential student counseling services", "Student Centre, 3rd Floor", "9:00 AM - 4:00 PM", None),
+
+    ("Campus Chapel", "Religious", "alice_wanjiru", "Approved", "Christian chapel open for services and quiet prayer", "East Campus", "6:00 AM - 9:00 PM", None),
+    ("Campus Mosque", "Religious", "daniel_kamau", "Approved", "Prayer space and ablution facilities", "East Campus", "5:00 AM - 10:00 PM", _MOSQUE),
+    ("Interfaith Prayer Room", "Religious", "jane_doe", "Pending", "Quiet multi-faith prayer and reflection room", "Student Centre, 3rd Floor", "24 hours", None),
 ]
 
 REVIEW_DATA = [
@@ -143,6 +193,30 @@ REVIEW_DATA = [
     ("Campus Bookshop", "daniel_kamau", 4, "Fast printing."),
     ("Campus Bookshop", "john_smith", 5, "Everything available."),
     ("Campus Bookshop", "alice_wanjiru", 3, "Limited parking."),
+
+    ("Engineering Complex", "kevin_otieno", 5, "Great labs and fast wifi."),
+    ("Engineering Complex", "faith_njeri", 4, "Clean and well maintained."),
+    ("Engineering Complex", "grace_cherono", 4, "Can get crowded before exams."),
+
+    ("Administration Block", "jane_doe", 3, "Lines can be long during registration week."),
+    ("Administration Block", "brian_kiptoo", 4, "Staff were helpful once I got to the counter."),
+    ("Administration Block", "alice_wanjiru", 5, "Sorted my transcript request in one visit."),
+
+    ("Student Centre", "daniel_kamau", 5, "Great place to hang out between classes."),
+    ("Student Centre", "kevin_otieno", 5, "Love the events they host here."),
+    ("Student Centre", "john_smith", 4, "Could use more seating during lunch hour."),
+    ("Student Centre", "faith_njeri", 4, "Good wifi and charging points."),
+
+    ("Campus Chapel", "alice_wanjiru", 5, "Peaceful place, love the Sunday service."),
+    ("Campus Chapel", "grace_cherono", 5, "Beautiful and quiet."),
+    ("Campus Chapel", "daniel_kamau", 4, "Nice space for reflection between classes."),
+
+    ("Campus Mosque", "daniel_kamau", 5, "Well maintained ablution area."),
+    ("Campus Mosque", "jane_doe", 5, "Quiet and peaceful, great for Jummah."),
+    ("Campus Mosque", "john_smith", 4, "Good facilities."),
+
+    ("Central Washrooms", "brian_kiptoo", 3, "Usually clean but can run out of supplies."),
+    ("Central Washrooms", "kevin_otieno", 4, "Convenient location near the main square."),
 ]
 
 VISIT_PLAN_DATA = [
@@ -167,6 +241,13 @@ VISIT_PLAN_DATA = [
     ("john_smith", "Sunrise Hostel", "Planned"),
     ("kevin_otieno", "Amphitheatre", "Planned"),
     ("alice_wanjiru", "Student Cafeteria", "Visited"),
+
+    ("jane_doe", "Registrar's Office", "Planned"),
+    ("john_smith", "Student Centre", "Visited"),
+    ("alice_wanjiru", "Finance Office", "Planned"),
+    ("brian_kiptoo", "Campus Chapel", "Visited"),
+    ("faith_njeri", "Admissions Office", "Planned"),
+    ("kevin_otieno", "Engineering Complex", "Visited"),
 ]
 
 BOOKMARK_DATA = [
@@ -193,6 +274,15 @@ BOOKMARK_DATA = [
     ("daniel_kamau", "North Gate Shuttle Stop"),
     ("daniel_kamau", "Java House Campus Branch"),
     ("daniel_kamau", "Student Lounge"),
+
+    ("jane_doe", "Student Centre"),
+    ("john_smith", "Administration Block"),
+    ("alice_wanjiru", "Campus Chapel"),
+    ("brian_kiptoo", "Engineering Complex"),
+    ("faith_njeri", "Campus Mosque"),
+    ("kevin_otieno", "Clubs & Societies Office"),
+    ("grace_cherono", "Central Washrooms"),
+    ("daniel_kamau", "Main Gate"),
 ]
 
 

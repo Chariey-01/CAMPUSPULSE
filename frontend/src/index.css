@@ -35,6 +35,12 @@
   --cat-6: #7a6a1f; /* stationery — olive */
   --cat-7: #45568f; /* transport — slate blue */
   --cat-8: #6b4fa8; /* entertainment — plum */
+  --cat-9: #2f4a7a; /* academic buildings — navy */
+  --cat-10: #8a6a3a; /* administration — tan */
+  --cat-11: #3d6b7a; /* utilities — steel blue */
+  --cat-12: #8a2f3a; /* safety & security — brick red */
+  --cat-13: #c2555a; /* student life — coral */
+  --cat-14: #5a3d7a; /* religious — violet */
 
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -97,6 +103,12 @@
     --cat-6: #c2b25a;
     --cat-7: #8fa2e0;
     --cat-8: #ad91e0;
+    --cat-9: #7d9ae0;
+    --cat-10: #d4ac6e;
+    --cat-11: #6fb0c2;
+    --cat-12: #e0707d;
+    --cat-13: #e88a8e;
+    --cat-14: #a98ee0;
 
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 16px -4px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.3);
