@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Send } from 'lucide-react'
 import { api } from '../api/client'
+import { uploadImage } from '../services/uploadService'
 
 export default function SubmitPlacePage() {
   const [categories, setCategories] = useState([])
@@ -17,6 +18,8 @@ export default function SubmitPlacePage() {
   })
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [imageError, setImageError] = useState('')
 
   const navigate = useNavigate()
 
@@ -26,6 +29,25 @@ export default function SubmitPlacePage() {
 
   function handleChange(field) {
     return (event) => setForm((prev) => ({ ...prev, [field]: event.target.value }))
+  }
+
+  async function handleImageSelect(event) {
+    const file = event.target.files[0]
+    if (!file) return
+
+    setImageError('')
+    setUploading(true)
+
+    try {
+      const url = await uploadImage(file)
+      setForm((prev) => ({ ...prev, image_url: url }))
+    } catch (err) {
+      setImageError(err.message)
+    } finally {
+      setUploading(false)
+      // reset so selecting the same file again (e.g. after a failed upload) still fires onChange
+      event.target.value = ''
+    }
   }
 
   async function handleSubmit(event) {
@@ -89,9 +111,14 @@ export default function SubmitPlacePage() {
         </label>
 
         <label>
-          Image URL
-          <input type="text" value={form.image_url} onChange={handleChange('image_url')} />
+          Photo
+          <input type="file" accept="image/*" onChange={handleImageSelect} disabled={uploading} />
         </label>
+        {uploading && <p className="hint">Uploading...</p>}
+        {imageError && <p className="error">{imageError}</p>}
+        {form.image_url && !uploading && (
+          <img src={form.image_url} alt="Preview" className="image-preview" />
+        )}
 
         <label>
           Google Maps link
